@@ -61,3 +61,20 @@ describe('ratear, pesos', () => {
     ])
   })
 })
+
+describe('ratear, maior resto', () => {
+  it('deve dar o centavo que sobra a quem tem o maior resto quando 100 é dividido com pesos 1 e 2', () => {
+    const total = 100
+    const partes: Parte[] = [
+      { pessoaId: 'ana', peso: 1 },
+      { pessoaId: 'bia', peso: 2 },
+    ]
+
+    const resultado = ratear(total, partes)
+
+    expect(resultado).toEqual([
+      { pessoaId: 'ana', valor: 33 },
+      { pessoaId: 'bia', valor: 67 },
+    ])
+  })
+})

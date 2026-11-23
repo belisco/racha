@@ -4,12 +4,27 @@ export type Cota = { pessoaId: string; valor: Centavos }
 
 export function ratear(total: Centavos, partes: Parte[]): Cota[] {
   const somaDosPesos = partes.reduce((soma, parte) => soma + parte.peso, 0)
-  const pisos = partes.map((parte) => Math.floor((total * parte.peso) / somaDosPesos))
-  const somaDosPisos = pisos.reduce((soma, piso) => soma + piso, 0)
+  const calculos = partes.map((parte, indice) => {
+    const produto = total * parte.peso
+    return {
+      indice,
+      piso: Math.floor(produto / somaDosPesos),
+      resto: produto % somaDosPesos,
+    }
+  })
+  const somaDosPisos = calculos.reduce((soma, calculo) => soma + calculo.piso, 0)
   const sobra = total - somaDosPisos
+
+  // o sort é estável: em empate de resto, quem vem primeiro na lista fica na frente
+  const indicesPremiados = new Set(
+    [...calculos]
+      .sort((a, b) => b.resto - a.resto)
+      .slice(0, sobra)
+      .map((calculo) => calculo.indice),
+  )
 
   return partes.map((parte, indice) => ({
     pessoaId: parte.pessoaId,
-    valor: pisos[indice] + (indice < sobra ? 1 : 0),
+    valor: calculos[indice].piso + (indicesPremiados.has(indice) ? 1 : 0),
   }))
 }
