@@ -16,4 +16,16 @@ describe('calcularTransferencias', () => {
       { de: 'bia', para: 'caio', valor: 2000 },
     ])
   })
+
+  it('deve gerar uma única transferência quando a dívida forma uma cadeia', () => {
+    const saldos = new Map([
+      ['a', -5000],
+      ['b', 0],
+      ['c', 5000],
+    ])
+
+    const resultado = calcularTransferencias(saldos)
+
+    expect(resultado).toEqual([{ de: 'a', para: 'c', valor: 5000 }])
+  })
 })
