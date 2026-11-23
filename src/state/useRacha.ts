@@ -44,6 +44,25 @@ export function useRacha(armazenamento: Armazenamento = localStorage) {
     return null
   }
 
+  // devolve a mensagem de erro, ou null quando a pessoa foi removida
+  function removerPessoa(pessoaId: string): string | null {
+    const participa = racha.despesas.some(
+      (despesa) =>
+        despesa.pagoPor === pessoaId || despesa.partes.some((parte) => parte.pessoaId === pessoaId),
+    )
+
+    if (participa) {
+      const nome = racha.pessoas.find((pessoa) => pessoa.id === pessoaId)?.nome
+      return `${nome} está em alguma despesa e não pode ser removida.`
+    }
+
+    setRacha((atual) => ({
+      ...atual,
+      pessoas: atual.pessoas.filter((pessoa) => pessoa.id !== pessoaId),
+    }))
+    return null
+  }
+
   function adicionarDespesa(despesa: NovaDespesa): void {
     setRacha((atual) => ({
       ...atual,
@@ -64,6 +83,7 @@ export function useRacha(armazenamento: Armazenamento = localStorage) {
     transferencias,
     renomearRacha,
     adicionarPessoa,
+    removerPessoa,
     adicionarDespesa,
     removerDespesa,
   }

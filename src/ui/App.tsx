@@ -11,6 +11,7 @@ export function App() {
     transferencias,
     renomearRacha,
     adicionarPessoa,
+    removerPessoa,
     adicionarDespesa,
     removerDespesa,
   } = useRacha()
@@ -36,7 +37,11 @@ export function App() {
           </label>
         </section>
 
-        <PessoasSecao pessoas={racha.pessoas} onAdicionar={adicionarPessoa} />
+        <PessoasSecao
+          pessoas={racha.pessoas}
+          onAdicionar={adicionarPessoa}
+          onRemover={removerPessoa}
+        />
 
         <DespesaForm pessoas={racha.pessoas} onAdicionar={adicionarDespesa} />
 

@@ -58,4 +58,17 @@ describe('App', () => {
     const quemPagaQuem = screen.getByRole('list', { name: 'Quem paga quem' })
     expect(quemPagaQuem).toHaveTextContent('Ana paga R$ 30,00 para Bruno')
   })
+
+  it('deve avisar e manter a pessoa quando ela participa de uma despesa e é removida', async () => {
+    const usuario = userEvent.setup()
+    render(<App />)
+    await cadastrarPessoa(usuario, 'Ana')
+    await usuario.type(screen.getByLabelText('Valor (R$)'), '10,00')
+    await usuario.click(screen.getByRole('button', { name: 'Lançar despesa' }))
+
+    await usuario.click(screen.getByRole('button', { name: 'Remover Ana' }))
+
+    expect(screen.getByRole('alert')).toHaveTextContent('Ana está em alguma despesa e não pode ser removida.')
+    expect(within(screen.getByRole('list', { name: 'Pessoas do racha' })).getByText('Ana')).toBeInTheDocument()
+  })
 })
