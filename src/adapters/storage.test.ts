@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Racha } from '../domain/types'
-import { type Armazenamento, carregarRacha, salvarRacha } from './storage'
+import { type Armazenamento, CHAVE_DO_RACHA, carregarRacha, salvarRacha } from './storage'
 
 function criarArmazenamentoFalso(): Armazenamento {
   const dados = new Map<string, string>()
@@ -42,5 +42,40 @@ describe('storage', () => {
     const resultado = carregarRacha(armazenamento)
 
     expect(resultado).toEqual(racha)
+  })
+
+  it('deve devolver o racha vazio quando não há nada salvo', () => {
+    const armazenamento = criarArmazenamentoFalso()
+
+    const resultado = carregarRacha(armazenamento)
+
+    expect(resultado).toEqual({ versao: 1, nome: '', pessoas: [], despesas: [] })
+  })
+
+  it('deve devolver o racha vazio quando o texto salvo não é JSON', () => {
+    const armazenamento = criarArmazenamentoFalso()
+    armazenamento.setItem(CHAVE_DO_RACHA, '{isto não é json')
+
+    const resultado = carregarRacha(armazenamento)
+
+    expect(resultado).toEqual({ versao: 1, nome: '', pessoas: [], despesas: [] })
+  })
+
+  it('deve devolver o racha vazio quando o JSON salvo não tem o formato de um racha', () => {
+    const armazenamento = criarArmazenamentoFalso()
+    armazenamento.setItem(CHAVE_DO_RACHA, '{"versao":2,"pessoas":"nenhuma"}')
+
+    const resultado = carregarRacha(armazenamento)
+
+    expect(resultado).toEqual({ versao: 1, nome: '', pessoas: [], despesas: [] })
+  })
+
+  it('deve devolver o racha vazio quando o JSON salvo é nulo', () => {
+    const armazenamento = criarArmazenamentoFalso()
+    armazenamento.setItem(CHAVE_DO_RACHA, 'null')
+
+    const resultado = carregarRacha(armazenamento)
+
+    expect(resultado).toEqual({ versao: 1, nome: '', pessoas: [], despesas: [] })
   })
 })
