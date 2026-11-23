@@ -22,7 +22,7 @@ describe('calcularSaldos', () => {
       ],
     }
 
-    const resultado = calcularSaldos(pessoas, despesa)
+    const resultado = calcularSaldos(pessoas, [despesa])
 
     expect(resultado).toEqual(
       new Map([
@@ -52,11 +52,35 @@ describe('calcularSaldos', () => {
       ],
     }
 
-    const resultado = calcularSaldos(pessoas, despesa)
+    const resultado = calcularSaldos(pessoas, [despesa])
 
     expect(resultado.has('caio')).toBe(true)
     expect(resultado.has('dani')).toBe(true)
     expect(resultado.get('caio')).toBe(0)
     expect(resultado.get('dani')).toBe(0)
+  })
+
+  it('deve acumular os saldos quando há várias despesas pagas por pessoas diferentes', () => {
+    const pessoas: Pessoa[] = [
+      { id: 'ana', nome: 'Ana' },
+      { id: 'bia', nome: 'Bia' },
+    ]
+    const partes = [
+      { pessoaId: 'ana', peso: 1 },
+      { pessoaId: 'bia', peso: 1 },
+    ]
+    const despesas: Despesa[] = [
+      { id: 'd1', descricao: 'Lanche', valor: 1000, gorjetaPercentual: 0, pagoPor: 'ana', partes },
+      { id: 'd2', descricao: 'Jantar', valor: 3000, gorjetaPercentual: 0, pagoPor: 'bia', partes },
+    ]
+
+    const resultado = calcularSaldos(pessoas, despesas)
+
+    expect(resultado).toEqual(
+      new Map([
+        ['ana', -1000],
+        ['bia', 1000],
+      ]),
+    )
   })
 })
