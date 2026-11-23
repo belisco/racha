@@ -28,4 +28,16 @@ describe('calcularTransferencias', () => {
 
     expect(resultado).toEqual([{ de: 'a', para: 'c', valor: 5000 }])
   })
+
+  it('deve devolver lista vazia quando todos os saldos são zero', () => {
+    const saldos = new Map([
+      ['ana', 0],
+      ['bia', 0],
+      ['caio', 0],
+    ])
+
+    const resultado = calcularTransferencias(saldos)
+
+    expect(resultado).toEqual([])
+  })
 })
