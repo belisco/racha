@@ -195,3 +195,8 @@ button.secundario {
   border: 1px solid var(--borda);
   font-weight: 500;
 }
+
+h3 {
+  margin: 16px 0 0;
+  font-size: 1rem;
+}

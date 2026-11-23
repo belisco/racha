@@ -2,10 +2,18 @@ import { useRacha } from '../state/useRacha'
 import { DespesaForm } from './DespesaForm'
 import { DespesasLista } from './DespesasLista'
 import { PessoasSecao } from './PessoasSecao'
+import { ResultadoSecao } from './ResultadoSecao'
 
 export function App() {
-  const { racha, renomearRacha, adicionarPessoa, adicionarDespesa, removerDespesa } =
-    useRacha()
+  const {
+    racha,
+    saldos,
+    transferencias,
+    renomearRacha,
+    adicionarPessoa,
+    adicionarDespesa,
+    removerDespesa,
+  } = useRacha()
 
   return (
     <div className="app">
@@ -36,6 +44,12 @@ export function App() {
           despesas={racha.despesas}
           pessoas={racha.pessoas}
           onRemover={removerDespesa}
+        />
+
+        <ResultadoSecao
+          pessoas={racha.pessoas}
+          saldos={saldos}
+          transferencias={transferencias}
         />
       </main>
     </div>
