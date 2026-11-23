@@ -9,7 +9,13 @@ export function formatarCentavos(centavos: number): string {
   return `${sinal}R$ ${reaisComMilhar},${centavosComZero}`
 }
 
-export function interpretarValor(texto: string): number {
+const FORMATO_VALOR = /^(\d{1,3}(\.\d{3})+|\d+)(,\d{1,2})?$/
+
+export function interpretarValor(texto: string): number | null {
+  if (!FORMATO_VALOR.test(texto)) {
+    return null
+  }
+
   // a vírgula extra no fim garante que a parte dos centavos exista mesmo sem vírgula no texto
   const [inteira, fracao] = `${texto},`.split(',')
   const reais = Number(inteira.replaceAll('.', ''))

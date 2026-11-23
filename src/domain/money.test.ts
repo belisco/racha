@@ -39,3 +39,19 @@ describe('interpretarValor', () => {
     expect(resultadoComUmDigito).toBe(1250)
   })
 })
+
+describe('interpretarValor com texto inválido', () => {
+  it('deve devolver null quando o texto não é um valor', () => {
+    const comLetras = 'abc'
+    const comDuasVirgulas = '1,2,3'
+    const vazio = ''
+
+    const resultadoComLetras = interpretarValor(comLetras)
+    const resultadoComDuasVirgulas = interpretarValor(comDuasVirgulas)
+    const resultadoVazio = interpretarValor(vazio)
+
+    expect(resultadoComLetras).toBeNull()
+    expect(resultadoComDuasVirgulas).toBeNull()
+    expect(resultadoVazio).toBeNull()
+  })
+})
