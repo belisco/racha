@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ratear, ratearDespesa } from './split'
+import { calcularGorjeta, ratear, ratearDespesa } from './split'
 import type { Cota } from './split'
 import type { Centavos, Despesa, Parte } from './types'
 
@@ -99,5 +99,16 @@ describe('ratearDespesa', () => {
       { pessoaId: 'ana', valor: 5500 },
       { pessoaId: 'bia', valor: 5500 },
     ])
+  })
+})
+
+describe('calcularGorjeta', () => {
+  it('deve arredondar ao centavo mais próximo quando a gorjeta não é exata', () => {
+    const valor = 3333
+    const percentual = 10
+
+    const resultado = calcularGorjeta(valor, percentual)
+
+    expect(resultado).toBe(333)
   })
 })

@@ -30,7 +30,7 @@ export function ratear(total: Centavos, partes: Parte[]): Cota[] {
 }
 
 export function calcularGorjeta(valor: Centavos, percentual: number): Centavos {
-  return (valor * percentual) / 100
+  return Math.round((valor * percentual) / 100)
 }
 
 export function ratearDespesa(despesa: Despesa): Cota[] {
