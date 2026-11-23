@@ -2,6 +2,8 @@ import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {
+    environment: 'jsdom',
+    setupFiles: ['src/test/setup.ts'],
     include: ['src/**/*.test.{ts,tsx}'],
     coverage: {
       provider: 'v8',
@@ -9,6 +11,7 @@ export default defineConfig({
       exclude: [
         'src/main.tsx',
         'src/**/*.test.{ts,tsx}',
+        'src/test/**',
         // tela de exemplo do Vite, sai quando o layout de verdade entrar
         'src/App.tsx',
       ],
