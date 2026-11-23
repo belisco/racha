@@ -100,6 +100,21 @@ describe('ratearDespesa', () => {
       { pessoaId: 'bia', valor: 5500 },
     ])
   })
+
+  it('deve lançar erro quando a despesa não tem partes', () => {
+    const despesa: Despesa = {
+      id: 'd1',
+      descricao: 'Jantar',
+      valor: 10000,
+      gorjetaPercentual: 0,
+      pagoPor: 'ana',
+      partes: [],
+    }
+
+    const ratearSemPartes = () => ratearDespesa(despesa)
+
+    expect(ratearSemPartes).toThrow('pelo menos uma parte')
+  })
 })
 
 describe('calcularGorjeta', () => {

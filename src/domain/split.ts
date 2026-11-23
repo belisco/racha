@@ -3,6 +3,10 @@ import type { Centavos, Despesa, Parte } from './types'
 export type Cota = { pessoaId: string; valor: Centavos }
 
 export function ratear(total: Centavos, partes: Parte[]): Cota[] {
+  if (partes.length === 0) {
+    throw new Error('É preciso ter pelo menos uma parte para ratear')
+  }
+
   const somaDosPesos = partes.reduce((soma, parte) => soma + parte.peso, 0)
   const calculos = partes.map((parte, indice) => {
     const produto = total * parte.peso
