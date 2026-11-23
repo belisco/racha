@@ -3,6 +3,15 @@ import { interpretarValor } from '../domain/money'
 import type { Pessoa } from '../domain/types'
 import type { NovaDespesa } from '../state/useRacha'
 
+type ModoDivisao = 'igual' | 'pesos'
+
+const GORJETA_MAXIMA = 30
+
+function lerInteiro(texto: string): number {
+  // campo vazio conta como zero; o resto passa pelo Number e é conferido por quem chama
+  return texto.trim() === '' ? 0 : Number(texto)
+}
+
 interface Props {
   pessoas: Pessoa[]
   onAdicionar: (despesa: NovaDespesa) => void
@@ -14,6 +23,9 @@ export function DespesaForm({ pessoas, onAdicionar }: Props) {
   const [pagadorEscolhido, setPagadorEscolhido] = useState('')
   // guarda quem foi desmarcado, assim quem é cadastrado depois já entra na divisão
   const [foraDaDivisao, setForaDaDivisao] = useState<Set<string>>(new Set())
+  const [modo, setModo] = useState<ModoDivisao>('igual')
+  const [pesos, setPesos] = useState<Record<string, string>>({})
+  const [gorjetaTexto, setGorjetaTexto] = useState('0')
   const [erro, setErro] = useState<string | null>(null)
 
   if (pessoas.length === 0) {
@@ -42,6 +54,10 @@ export function DespesaForm({ pessoas, onAdicionar }: Props) {
     })
   }
 
+  function pesoDe(pessoaId: string): number {
+    return modo === 'igual' ? 1 : lerInteiro(pesos[pessoaId] ?? '1')
+  }
+
   function enviar(evento: FormEvent<HTMLFormElement>) {
     evento.preventDefault()
 
@@ -56,12 +72,31 @@ export function DespesaForm({ pessoas, onAdicionar }: Props) {
       return
     }
 
+    const partes = participantes.map((pessoa) => ({
+      pessoaId: pessoa.id,
+      peso: pesoDe(pessoa.id),
+    }))
+    if (partes.some((parte) => !Number.isInteger(parte.peso) || parte.peso <= 0)) {
+      setErro('Cada peso deve ser um número inteiro maior que zero.')
+      return
+    }
+
+    const gorjetaPercentual = lerInteiro(gorjetaTexto)
+    if (
+      !Number.isInteger(gorjetaPercentual) ||
+      gorjetaPercentual < 0 ||
+      gorjetaPercentual > GORJETA_MAXIMA
+    ) {
+      setErro(`A gorjeta deve ser um número inteiro de 0 a ${GORJETA_MAXIMA}.`)
+      return
+    }
+
     onAdicionar({
       descricao: descricao.trim() || 'Despesa',
       valor,
-      gorjetaPercentual: 0,
+      gorjetaPercentual,
       pagoPor,
-      partes: participantes.map((pessoa) => ({ pessoaId: pessoa.id, peso: 1 })),
+      partes,
     })
     setDescricao('')
     setValorTexto('')
@@ -72,7 +107,7 @@ export function DespesaForm({ pessoas, onAdicionar }: Props) {
     <section className="cartao" aria-labelledby="titulo-despesa">
       <h2 id="titulo-despesa">Nova despesa</h2>
 
-      <form className="formulario" onSubmit={enviar}>
+      <form className="formulario" noValidate onSubmit={enviar}>
         <label className="campo">
           Descrição
           <input
@@ -105,18 +140,71 @@ export function DespesaForm({ pessoas, onAdicionar }: Props) {
           </select>
         </label>
 
+        <label className="campo">
+          Gorjeta (%)
+          <input
+            type="number"
+            min={0}
+            max={GORJETA_MAXIMA}
+            step={1}
+            value={gorjetaTexto}
+            onChange={(evento) => setGorjetaTexto(evento.target.value)}
+          />
+        </label>
+
+        <fieldset className="grupo">
+          <legend>Divisão</legend>
+          <label className="opcao">
+            <input
+              type="radio"
+              name="modo-divisao"
+              checked={modo === 'igual'}
+              onChange={() => setModo('igual')}
+            />
+            Igual
+          </label>
+          <label className="opcao">
+            <input
+              type="radio"
+              name="modo-divisao"
+              checked={modo === 'pesos'}
+              onChange={() => setModo('pesos')}
+            />
+            Por pesos
+          </label>
+        </fieldset>
+
         <fieldset className="grupo">
           <legend>Quem divide</legend>
-          {pessoas.map((pessoa) => (
-            <label key={pessoa.id} className="opcao">
-              <input
-                type="checkbox"
-                checked={!foraDaDivisao.has(pessoa.id)}
-                onChange={() => alternarParticipante(pessoa.id)}
-              />
-              {pessoa.nome}
-            </label>
-          ))}
+          {pessoas.map((pessoa) => {
+            const participa = !foraDaDivisao.has(pessoa.id)
+
+            return (
+              <div key={pessoa.id} className="participante">
+                <label className="opcao">
+                  <input
+                    type="checkbox"
+                    checked={participa}
+                    onChange={() => alternarParticipante(pessoa.id)}
+                  />
+                  {pessoa.nome}
+                </label>
+                {modo === 'pesos' && participa && (
+                  <input
+                    type="number"
+                    className="peso"
+                    min={1}
+                    step={1}
+                    aria-label={`Peso de ${pessoa.nome}`}
+                    value={pesos[pessoa.id] ?? '1'}
+                    onChange={(evento) =>
+                      setPesos((atual) => ({ ...atual, [pessoa.id]: evento.target.value }))
+                    }
+                  />
+                )}
+              </div>
+            )
+          })}
         </fieldset>
 
         {erro && (

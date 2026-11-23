@@ -166,3 +166,13 @@ button {
   margin: 0;
   color: var(--texto-suave);
 }
+
+.participante {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.peso {
+  width: 64px;
+}
