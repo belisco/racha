@@ -12,8 +12,6 @@ export default defineConfig({
         'src/main.tsx',
         'src/**/*.test.{ts,tsx}',
         'src/test/**',
-        // tela de exemplo do Vite, sai quando o layout de verdade entrar
-        'src/App.tsx',
       ],
       reporter: ['text', 'lcov'],
       thresholds: { lines: 80, functions: 80, branches: 80, statements: 80 },
