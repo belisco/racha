@@ -176,3 +176,22 @@ button {
 .peso {
   width: 64px;
 }
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.detalhe {
+  color: var(--texto-suave);
+  font-size: 0.875rem;
+}
+
+button.secundario {
+  background: transparent;
+  color: var(--texto);
+  border: 1px solid var(--borda);
+  font-weight: 500;
+}
