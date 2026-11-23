@@ -1,4 +1,4 @@
-import type { Centavos, Parte } from './types'
+import type { Centavos, Despesa, Parte } from './types'
 
 export type Cota = { pessoaId: string; valor: Centavos }
 
@@ -27,4 +27,14 @@ export function ratear(total: Centavos, partes: Parte[]): Cota[] {
     pessoaId: parte.pessoaId,
     valor: calculos[indice].piso + (indicesPremiados.has(indice) ? 1 : 0),
   }))
+}
+
+export function calcularGorjeta(valor: Centavos, percentual: number): Centavos {
+  return (valor * percentual) / 100
+}
+
+export function ratearDespesa(despesa: Despesa): Cota[] {
+  const total = despesa.valor + calcularGorjeta(despesa.valor, despesa.gorjetaPercentual)
+
+  return ratear(total, despesa.partes)
 }

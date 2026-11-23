@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { ratear } from './split'
+import { ratear, ratearDespesa } from './split'
 import type { Cota } from './split'
-import type { Centavos, Parte } from './types'
+import type { Centavos, Despesa, Parte } from './types'
 
 function montarPartes(quantidade: number): Parte[] {
   return Array.from({ length: quantidade }, (_, indice) => ({
@@ -75,6 +75,29 @@ describe('ratear, maior resto', () => {
     expect(resultado).toEqual([
       { pessoaId: 'ana', valor: 33 },
       { pessoaId: 'bia', valor: 67 },
+    ])
+  })
+})
+
+describe('ratearDespesa', () => {
+  it('deve ratear o valor mais a gorjeta quando a despesa tem 10% de gorjeta', () => {
+    const despesa: Despesa = {
+      id: 'd1',
+      descricao: 'Jantar',
+      valor: 10000,
+      gorjetaPercentual: 10,
+      pagoPor: 'ana',
+      partes: [
+        { pessoaId: 'ana', peso: 1 },
+        { pessoaId: 'bia', peso: 1 },
+      ],
+    }
+
+    const resultado = ratearDespesa(despesa)
+
+    expect(resultado).toEqual([
+      { pessoaId: 'ana', valor: 5500 },
+      { pessoaId: 'bia', valor: 5500 },
     ])
   })
 })
