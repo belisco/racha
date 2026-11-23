@@ -3,16 +3,21 @@ import type { Pessoa } from '../domain/types'
 
 interface Props {
   pessoas: Pessoa[]
-  onAdicionar: (nome: string) => void
+  onAdicionar: (nome: string) => string | null
 }
 
 export function PessoasSecao({ pessoas, onAdicionar }: Props) {
   const [nome, setNome] = useState('')
+  const [erro, setErro] = useState<string | null>(null)
 
   function enviar(evento: FormEvent<HTMLFormElement>) {
     evento.preventDefault()
-    onAdicionar(nome.trim())
-    setNome('')
+    const mensagem = onAdicionar(nome)
+    setErro(mensagem)
+
+    if (mensagem === null) {
+      setNome('')
+    }
   }
 
   return (
@@ -26,6 +31,12 @@ export function PessoasSecao({ pessoas, onAdicionar }: Props) {
         </label>
         <button type="submit">Adicionar pessoa</button>
       </form>
+
+      {erro && (
+        <p className="erro" role="alert">
+          {erro}
+        </p>
+      )}
 
       <ul className="lista" aria-label="Pessoas do racha">
         {pessoas.map((pessoa) => (

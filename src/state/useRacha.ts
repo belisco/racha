@@ -24,11 +24,24 @@ export function useRacha(armazenamento: Armazenamento = localStorage) {
     setRacha((atual) => ({ ...atual, nome }))
   }
 
-  function adicionarPessoa(nome: string): void {
+  // devolve a mensagem de erro, ou null quando a pessoa foi adicionada
+  function adicionarPessoa(nomeDigitado: string): string | null {
+    const nome = nomeDigitado.trim()
+
+    if (nome === '') {
+      return 'Informe o nome da pessoa.'
+    }
+
+    const chave = nome.toLocaleLowerCase('pt-BR')
+    if (racha.pessoas.some((pessoa) => pessoa.nome.toLocaleLowerCase('pt-BR') === chave)) {
+      return `Já existe uma pessoa chamada ${nome}.`
+    }
+
     setRacha((atual) => ({
       ...atual,
       pessoas: [...atual.pessoas, { id: criarId(), nome }],
     }))
+    return null
   }
 
   function adicionarDespesa(despesa: NovaDespesa): void {

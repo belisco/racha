@@ -129,3 +129,9 @@ button {
   border: 1px solid var(--borda);
   border-radius: 8px;
 }
+
+.erro {
+  margin: 8px 0 0;
+  color: var(--erro);
+  font-weight: 500;
+}
