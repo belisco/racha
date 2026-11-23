@@ -1,8 +1,10 @@
 export function formatarCentavos(centavos: number): string {
-  const reais = Math.floor(centavos / 100)
-  const resto = centavos % 100
+  const sinal = centavos < 0 ? '-' : ''
+  const absoluto = Math.abs(centavos)
+  const reais = Math.floor(absoluto / 100)
+  const resto = absoluto % 100
   const reaisComMilhar = String(reais).replace(/\B(?=(\d{3})+(?!\d))/g, '.')
   const centavosComZero = String(resto).padStart(2, '0')
 
-  return `R$ ${reaisComMilhar},${centavosComZero}`
+  return `${sinal}R$ ${reaisComMilhar},${centavosComZero}`
 }
