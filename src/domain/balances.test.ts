@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import { calcularSaldos } from './balances'
-import type { Despesa, Pessoa } from './types'
+import type { Centavos, Despesa, Pessoa } from './types'
+
+function somarSaldos(saldos: Map<string, Centavos>): Centavos {
+  return [...saldos.values()].reduce((soma, saldo) => soma + saldo, 0)
+}
 
 describe('calcularSaldos', () => {
   it('deve creditar quem pagou e debitar cada participante quando a despesa é dividida igualmente', () => {
@@ -82,5 +86,45 @@ describe('calcularSaldos', () => {
         ['bia', 1000],
       ]),
     )
+  })
+
+  it('deve manter a soma dos saldos em zero quando há várias despesas com gorjeta e divisão inexata', () => {
+    const pessoas: Pessoa[] = [
+      { id: 'ana', nome: 'Ana' },
+      { id: 'bruno', nome: 'Bruno' },
+      { id: 'caio', nome: 'Caio' },
+      { id: 'dani', nome: 'Dani' },
+    ]
+    const despesas: Despesa[] = [
+      {
+        id: 'd1',
+        descricao: 'Jantar de sexta',
+        valor: 20000,
+        gorjetaPercentual: 10,
+        pagoPor: 'bruno',
+        partes: [
+          { pessoaId: 'ana', peso: 1 },
+          { pessoaId: 'bruno', peso: 1 },
+          { pessoaId: 'caio', peso: 1 },
+          { pessoaId: 'dani', peso: 1 },
+        ],
+      },
+      {
+        id: 'd2',
+        descricao: 'Sobremesa',
+        valor: 10000,
+        gorjetaPercentual: 0,
+        pagoPor: 'ana',
+        partes: [
+          { pessoaId: 'ana', peso: 1 },
+          { pessoaId: 'caio', peso: 1 },
+          { pessoaId: 'dani', peso: 1 },
+        ],
+      },
+    ]
+
+    const resultado = calcularSaldos(pessoas, despesas)
+
+    expect(somarSaldos(resultado)).toBe(0)
   })
 })
