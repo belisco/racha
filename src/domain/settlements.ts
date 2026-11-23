@@ -2,6 +2,19 @@ import type { Centavos, Transferencia } from './types'
 
 type Pendencia = { pessoaId: string; valor: Centavos }
 
+// em empate de valor fica o primeiro da lista, que é a ordem de cadastro
+function indiceDoMaior(pendencias: Pendencia[]): number {
+  let melhor = 0
+
+  for (let indice = 1; indice < pendencias.length; indice++) {
+    if (pendencias[indice].valor > pendencias[melhor].valor) {
+      melhor = indice
+    }
+  }
+
+  return melhor
+}
+
 export function calcularTransferencias(saldos: Map<string, Centavos>): Transferencia[] {
   const devedores: Pendencia[] = []
   const credores: Pendencia[] = []
@@ -15,12 +28,12 @@ export function calcularTransferencias(saldos: Map<string, Centavos>): Transfere
   }
 
   const transferencias: Transferencia[] = []
-  let proximoDevedor = 0
-  let proximoCredor = 0
 
-  while (proximoDevedor < devedores.length && proximoCredor < credores.length) {
-    const devedor = devedores[proximoDevedor]
-    const credor = credores[proximoCredor]
+  while (devedores.length > 0 && credores.length > 0) {
+    const indiceDevedor = indiceDoMaior(devedores)
+    const indiceCredor = indiceDoMaior(credores)
+    const devedor = devedores[indiceDevedor]
+    const credor = credores[indiceCredor]
     const valor = Math.min(devedor.valor, credor.valor)
 
     transferencias.push({ de: devedor.pessoaId, para: credor.pessoaId, valor })
@@ -28,10 +41,10 @@ export function calcularTransferencias(saldos: Map<string, Centavos>): Transfere
     credor.valor -= valor
 
     if (devedor.valor === 0) {
-      proximoDevedor++
+      devedores.splice(indiceDevedor, 1)
     }
     if (credor.valor === 0) {
-      proximoCredor++
+      credores.splice(indiceCredor, 1)
     }
   }
 

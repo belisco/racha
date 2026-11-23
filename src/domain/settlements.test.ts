@@ -76,4 +76,22 @@ describe('calcularTransferencias', () => {
       ]),
     )
   })
+
+  it('deve usar no máximo n-1 transferências, do maior devedor ao maior credor, quando há quatro pessoas', () => {
+    const saldos = new Map([
+      ['ana', 1166],
+      ['bruno', 16500],
+      ['caio', -8833],
+      ['dani', -8833],
+    ])
+
+    const resultado = calcularTransferencias(saldos)
+
+    expect(resultado).toEqual([
+      { de: 'caio', para: 'bruno', valor: 8833 },
+      { de: 'dani', para: 'bruno', valor: 7667 },
+      { de: 'dani', para: 'ana', valor: 1166 },
+    ])
+    expect(resultado.length).toBeLessThanOrEqual(3)
+  })
 })
