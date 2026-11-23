@@ -39,6 +39,8 @@ export function PessoasSecao({ pessoas, onAdicionar, onRemover }: Props) {
         </p>
       )}
 
+      {pessoas.length === 0 && <p className="vazio">Nenhuma pessoa cadastrada.</p>}
+
       <ul className="lista" aria-label="Pessoas do racha">
         {pessoas.map((pessoa) => (
           <li key={pessoa.id} className="item">

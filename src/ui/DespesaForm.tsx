@@ -113,7 +113,7 @@ export function DespesaForm({ pessoas, onAdicionar }: Props) {
           <input
             type="text"
             value={descricao}
-            placeholder="Rodízio"
+            placeholder="Ex.: Rodízio"
             onChange={(evento) => setDescricao(evento.target.value)}
           />
         </label>
@@ -124,7 +124,7 @@ export function DespesaForm({ pessoas, onAdicionar }: Props) {
             type="text"
             inputMode="decimal"
             value={valorTexto}
-            placeholder="200,00"
+            placeholder="Ex.: 200,00"
             onChange={(evento) => setValorTexto(evento.target.value)}
           />
         </label>

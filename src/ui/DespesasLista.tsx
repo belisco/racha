@@ -15,6 +15,8 @@ export function DespesasLista({ despesas, pessoas, onRemover }: Props) {
     <section className="cartao" aria-labelledby="titulo-despesas">
       <h2 id="titulo-despesas">Despesas</h2>
 
+      {despesas.length === 0 && <p className="vazio">Nenhuma despesa lançada.</p>}
+
       <ul className="lista" aria-label="Despesas lançadas">
         {despesas.map((despesa) => {
           const total = despesa.valor + calcularGorjeta(despesa.valor, despesa.gorjetaPercentual)

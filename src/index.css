@@ -86,6 +86,11 @@ button {
   font: inherit;
 }
 
+input::placeholder {
+  color: var(--texto-suave);
+  opacity: 0.6;
+}
+
 input,
 select {
   padding: 8px 10px;
@@ -184,6 +189,15 @@ button {
   gap: 12px;
 }
 
+.item > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.item > button {
+  flex-shrink: 0;
+}
+
 .detalhe {
   color: var(--texto-suave);
   font-size: 0.875rem;
@@ -199,4 +213,50 @@ button.secundario {
 h3 {
   margin: 16px 0 0;
   font-size: 1rem;
+}
+
+.lista:empty {
+  display: none;
+}
+
+.vazio {
+  margin-top: 8px;
+  font-style: italic;
+}
+
+button:hover {
+  filter: brightness(1.08);
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--destaque);
+  outline-offset: 2px;
+}
+
+@media (min-width: 900px) {
+  .app {
+    max-width: 1040px;
+  }
+
+  .conteudo {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+
+  .conteudo > :first-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 480px) {
+  .app {
+    padding-top: 16px;
+  }
+
+  .linha > button,
+  .formulario > button {
+    width: 100%;
+  }
 }

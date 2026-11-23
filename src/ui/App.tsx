@@ -31,7 +31,7 @@ export function App() {
             <input
               type="text"
               value={racha.nome}
-              placeholder="Jantar de sexta"
+              placeholder="Ex.: Jantar de sexta"
               onChange={(evento) => renomearRacha(evento.target.value)}
             />
           </label>
