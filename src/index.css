@@ -94,3 +94,38 @@ select {
   background: var(--fundo);
   color: var(--texto);
 }
+
+button {
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--destaque);
+  color: var(--destaque-texto);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.linha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 8px;
+}
+
+.linha .campo {
+  flex: 1 1 200px;
+}
+
+.lista {
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+}
+
+.lista li {
+  padding: 8px 10px;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+}

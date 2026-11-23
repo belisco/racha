@@ -1,7 +1,8 @@
 import { useRacha } from '../state/useRacha'
+import { PessoasSecao } from './PessoasSecao'
 
 export function App() {
-  const { racha, renomearRacha } = useRacha()
+  const { racha, renomearRacha, adicionarPessoa } = useRacha()
 
   return (
     <div className="app">
@@ -23,6 +24,8 @@ export function App() {
             />
           </label>
         </section>
+
+        <PessoasSecao pessoas={racha.pessoas} onAdicionar={adicionarPessoa} />
       </main>
     </div>
   )
