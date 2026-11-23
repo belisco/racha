@@ -44,3 +44,20 @@ describe('ratear, soma das cotas', () => {
     expect(somarCotas(valorQuebradoPorOnze)).toBe(123457)
   })
 })
+
+describe('ratear, pesos', () => {
+  it('deve dividir proporcionalmente aos pesos quando os pesos são 1 e 3', () => {
+    const total = 10000
+    const partes: Parte[] = [
+      { pessoaId: 'ana', peso: 1 },
+      { pessoaId: 'bia', peso: 3 },
+    ]
+
+    const resultado = ratear(total, partes)
+
+    expect(resultado).toEqual([
+      { pessoaId: 'ana', valor: 2500 },
+      { pessoaId: 'bia', valor: 7500 },
+    ])
+  })
+})
