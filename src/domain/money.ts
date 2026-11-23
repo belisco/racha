@@ -8,3 +8,12 @@ export function formatarCentavos(centavos: number): string {
 
   return `${sinal}R$ ${reaisComMilhar},${centavosComZero}`
 }
+
+export function interpretarValor(texto: string): number {
+  // a vírgula extra no fim garante que a parte dos centavos exista mesmo sem vírgula no texto
+  const [inteira, fracao] = `${texto},`.split(',')
+  const reais = Number(inteira.replaceAll('.', ''))
+  const centavos = Number(fracao.padEnd(2, '0'))
+
+  return reais * 100 + centavos
+}
