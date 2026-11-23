@@ -32,4 +32,31 @@ describe('calcularSaldos', () => {
       ]),
     )
   })
+
+  it('deve deixar com saldo zero, presente no Map, quem não pagou nem participou', () => {
+    const pessoas: Pessoa[] = [
+      { id: 'ana', nome: 'Ana' },
+      { id: 'bia', nome: 'Bia' },
+      { id: 'caio', nome: 'Caio' },
+      { id: 'dani', nome: 'Dani' },
+    ]
+    const despesa: Despesa = {
+      id: 'd1',
+      descricao: 'Lanche',
+      valor: 8000,
+      gorjetaPercentual: 0,
+      pagoPor: 'ana',
+      partes: [
+        { pessoaId: 'ana', peso: 1 },
+        { pessoaId: 'bia', peso: 1 },
+      ],
+    }
+
+    const resultado = calcularSaldos(pessoas, despesa)
+
+    expect(resultado.has('caio')).toBe(true)
+    expect(resultado.has('dani')).toBe(true)
+    expect(resultado.get('caio')).toBe(0)
+    expect(resultado.get('dani')).toBe(0)
+  })
 })
