@@ -135,3 +135,34 @@ button {
   color: var(--erro);
   font-weight: 500;
 }
+
+.formulario {
+  display: grid;
+  gap: 12px;
+}
+
+.grupo {
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+.grupo legend {
+  padding: 0 4px;
+  font-weight: 500;
+}
+
+.opcao {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vazio {
+  margin: 0;
+  color: var(--texto-suave);
+}
