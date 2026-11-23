@@ -33,6 +33,29 @@ describe('ratear', () => {
   })
 })
 
+describe('ratear, validações', () => {
+  it('deve lançar erro quando algum peso é zero', () => {
+    const total = 10000
+    const partes: Parte[] = [
+      { pessoaId: 'ana', peso: 1 },
+      { pessoaId: 'bia', peso: 0 },
+    ]
+
+    const ratearComPesoZero = () => ratear(total, partes)
+
+    expect(ratearComPesoZero).toThrow('peso de cada parte')
+  })
+
+  it('deve lançar erro quando o valor é zero', () => {
+    const total = 0
+    const partes = montarPartes(2)
+
+    const ratearValorZero = () => ratear(total, partes)
+
+    expect(ratearValorZero).toThrow('total deve ser')
+  })
+})
+
 describe('ratear, soma das cotas', () => {
   it('deve somar o total quando a divisão não é exata', () => {
     const umCentavoPorDois = ratear(1, montarPartes(2))

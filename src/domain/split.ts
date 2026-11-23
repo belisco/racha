@@ -7,6 +7,14 @@ export function ratear(total: Centavos, partes: Parte[]): Cota[] {
     throw new Error('É preciso ter pelo menos uma parte para ratear')
   }
 
+  if (!Number.isInteger(total) || total <= 0) {
+    throw new Error('O total deve ser um número inteiro positivo de centavos')
+  }
+
+  if (partes.some((parte) => !Number.isInteger(parte.peso) || parte.peso <= 0)) {
+    throw new Error('O peso de cada parte deve ser um número inteiro positivo')
+  }
+
   const somaDosPesos = partes.reduce((soma, parte) => soma + parte.peso, 0)
   const calculos = partes.map((parte, indice) => {
     const produto = total * parte.peso
