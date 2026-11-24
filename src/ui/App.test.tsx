@@ -1,7 +1,12 @@
 import { render, screen, within } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import userEvent, { type UserEvent } from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { App } from './App'
+
+async function cadastrarPessoa(usuario: UserEvent, nome: string) {
+  await usuario.type(screen.getByLabelText('Nome da pessoa'), nome)
+  await usuario.click(screen.getByRole('button', { name: 'Adicionar pessoa' }))
+}
 
 describe('App', () => {
   it('deve mostrar o nome na lista quando uma pessoa é adicionada', async () => {
@@ -37,5 +42,33 @@ describe('App', () => {
 
     expect(screen.getByRole('alert')).toHaveTextContent('Já existe uma pessoa chamada ana.')
     expect(within(screen.getByRole('list', { name: 'Pessoas do racha' })).getAllByRole('listitem')).toHaveLength(1)
+  })
+
+  it('deve mostrar quem paga quem quando uma despesa é lançada', async () => {
+    const usuario = userEvent.setup()
+    render(<App />)
+    await cadastrarPessoa(usuario, 'Ana')
+    await cadastrarPessoa(usuario, 'Bruno')
+
+    await usuario.type(screen.getByLabelText('Descrição'), 'Pizza')
+    await usuario.type(screen.getByLabelText('Valor (R$)'), '60,00')
+    await usuario.selectOptions(screen.getByLabelText('Quem pagou'), 'Bruno')
+    await usuario.click(screen.getByRole('button', { name: 'Lançar despesa' }))
+
+    const quemPagaQuem = screen.getByRole('list', { name: 'Quem paga quem' })
+    expect(quemPagaQuem).toHaveTextContent('Ana paga R$ 30,00 para Bruno')
+  })
+
+  it('deve avisar e manter a pessoa quando ela participa de uma despesa e é removida', async () => {
+    const usuario = userEvent.setup()
+    render(<App />)
+    await cadastrarPessoa(usuario, 'Ana')
+    await usuario.type(screen.getByLabelText('Valor (R$)'), '10,00')
+    await usuario.click(screen.getByRole('button', { name: 'Lançar despesa' }))
+
+    await usuario.click(screen.getByRole('button', { name: 'Remover Ana' }))
+
+    expect(screen.getByRole('alert')).toHaveTextContent('Ana está em alguma despesa e não pode ser removida.')
+    expect(within(screen.getByRole('list', { name: 'Pessoas do racha' })).getByText('Ana')).toBeInTheDocument()
   })
 })

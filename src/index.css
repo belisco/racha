@@ -86,6 +86,11 @@ button {
   font: inherit;
 }
 
+input::placeholder {
+  color: var(--texto-suave);
+  opacity: 0.6;
+}
+
 input,
 select {
   padding: 8px 10px;
@@ -134,4 +139,124 @@ button {
   margin: 8px 0 0;
   color: var(--erro);
   font-weight: 500;
+}
+
+.formulario {
+  display: grid;
+  gap: 12px;
+}
+
+.grupo {
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+.grupo legend {
+  padding: 0 4px;
+  font-weight: 500;
+}
+
+.opcao {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vazio {
+  margin: 0;
+  color: var(--texto-suave);
+}
+
+.participante {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.peso {
+  width: 64px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.item > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.item > button {
+  flex-shrink: 0;
+}
+
+.detalhe {
+  color: var(--texto-suave);
+  font-size: 0.875rem;
+}
+
+button.secundario {
+  background: transparent;
+  color: var(--texto);
+  border: 1px solid var(--borda);
+  font-weight: 500;
+}
+
+h3 {
+  margin: 16px 0 0;
+  font-size: 1rem;
+}
+
+.lista:empty {
+  display: none;
+}
+
+.vazio {
+  margin-top: 8px;
+  font-style: italic;
+}
+
+button:hover {
+  filter: brightness(1.08);
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--destaque);
+  outline-offset: 2px;
+}
+
+@media (min-width: 900px) {
+  .app {
+    max-width: 1040px;
+  }
+
+  .conteudo {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+
+  .conteudo > :first-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 480px) {
+  .app {
+    padding-top: 16px;
+  }
+
+  .linha > button,
+  .formulario > button {
+    width: 100%;
+  }
 }

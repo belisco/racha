@@ -4,9 +4,10 @@ import type { Pessoa } from '../domain/types'
 interface Props {
   pessoas: Pessoa[]
   onAdicionar: (nome: string) => string | null
+  onRemover: (pessoaId: string) => string | null
 }
 
-export function PessoasSecao({ pessoas, onAdicionar }: Props) {
+export function PessoasSecao({ pessoas, onAdicionar, onRemover }: Props) {
   const [nome, setNome] = useState('')
   const [erro, setErro] = useState<string | null>(null)
 
@@ -38,9 +39,21 @@ export function PessoasSecao({ pessoas, onAdicionar }: Props) {
         </p>
       )}
 
+      {pessoas.length === 0 && <p className="vazio">Nenhuma pessoa cadastrada.</p>}
+
       <ul className="lista" aria-label="Pessoas do racha">
         {pessoas.map((pessoa) => (
-          <li key={pessoa.id}>{pessoa.nome}</li>
+          <li key={pessoa.id} className="item">
+            {pessoa.nome}
+            <button
+              type="button"
+              className="secundario"
+              aria-label={`Remover ${pessoa.nome}`}
+              onClick={() => setErro(onRemover(pessoa.id))}
+            >
+              Remover
+            </button>
+          </li>
         ))}
       </ul>
     </section>

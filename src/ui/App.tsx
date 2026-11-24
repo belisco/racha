@@ -1,8 +1,20 @@
 import { useRacha } from '../state/useRacha'
+import { DespesaForm } from './DespesaForm'
+import { DespesasLista } from './DespesasLista'
 import { PessoasSecao } from './PessoasSecao'
+import { ResultadoSecao } from './ResultadoSecao'
 
 export function App() {
-  const { racha, renomearRacha, adicionarPessoa } = useRacha()
+  const {
+    racha,
+    saldos,
+    transferencias,
+    renomearRacha,
+    adicionarPessoa,
+    removerPessoa,
+    adicionarDespesa,
+    removerDespesa,
+  } = useRacha()
 
   return (
     <div className="app">
@@ -19,13 +31,31 @@ export function App() {
             <input
               type="text"
               value={racha.nome}
-              placeholder="Jantar de sexta"
+              placeholder="Ex.: Jantar de sexta"
               onChange={(evento) => renomearRacha(evento.target.value)}
             />
           </label>
         </section>
 
-        <PessoasSecao pessoas={racha.pessoas} onAdicionar={adicionarPessoa} />
+        <PessoasSecao
+          pessoas={racha.pessoas}
+          onAdicionar={adicionarPessoa}
+          onRemover={removerPessoa}
+        />
+
+        <DespesaForm pessoas={racha.pessoas} onAdicionar={adicionarDespesa} />
+
+        <DespesasLista
+          despesas={racha.despesas}
+          pessoas={racha.pessoas}
+          onRemover={removerDespesa}
+        />
+
+        <ResultadoSecao
+          pessoas={racha.pessoas}
+          saldos={saldos}
+          transferencias={transferencias}
+        />
       </main>
     </div>
   )

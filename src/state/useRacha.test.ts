@@ -77,4 +77,29 @@ describe('useRacha', () => {
 
     expect(carregarRacha(localStorage).nome).toBe('Viagem')
   })
+
+  it('deve tirar a pessoa da lista quando ela não está em nenhuma despesa', () => {
+    salvarRacha(localStorage, rachaComDuasPessoas)
+    const { result } = renderHook(() => useRacha())
+
+    act(() => {
+      result.current.removerPessoa('ana')
+    })
+
+    expect(result.current.racha.pessoas.map((pessoa) => pessoa.id)).toEqual(['bruno'])
+  })
+
+  it('deve recusar a remoção quando a pessoa participa de uma despesa', () => {
+    salvarRacha(localStorage, rachaComDuasPessoas)
+    const { result } = renderHook(() => useRacha())
+    act(() => result.current.adicionarDespesa(despesaDoBrunoDividida))
+
+    let mensagem: string | null = null
+    act(() => {
+      mensagem = result.current.removerPessoa('ana')
+    })
+
+    expect(mensagem).toBe('Ana está em alguma despesa e não pode ser removida.')
+    expect(result.current.racha.pessoas).toHaveLength(2)
+  })
 })
