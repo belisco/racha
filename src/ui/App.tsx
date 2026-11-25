@@ -51,11 +51,7 @@ export function App() {
           onRemover={removerDespesa}
         />
 
-        <ResultadoSecao
-          pessoas={racha.pessoas}
-          saldos={saldos}
-          transferencias={transferencias}
-        />
+        <ResultadoSecao racha={racha} saldos={saldos} transferencias={transferencias} />
       </main>
     </div>
   )

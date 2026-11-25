@@ -1,8 +1,11 @@
+import { useState } from 'react'
+import { copiarTexto } from '../adapters/clipboard'
 import { formatarCentavos } from '../domain/money'
-import type { Centavos, Pessoa, Transferencia } from '../domain/types'
+import type { Centavos, Racha, Transferencia } from '../domain/types'
+import { gerarResumo } from '../domain/whatsapp'
 
 interface Props {
-  pessoas: Pessoa[]
+  racha: Racha
   saldos: Map<string, Centavos>
   transferencias: Transferencia[]
 }
@@ -17,8 +20,15 @@ function descreverSaldo(saldo: Centavos): string {
   return 'está quite'
 }
 
-export function ResultadoSecao({ pessoas, saldos, transferencias }: Props) {
+export function ResultadoSecao({ racha, saldos, transferencias }: Props) {
+  const { pessoas } = racha
   const nomes = new Map(pessoas.map((pessoa) => [pessoa.id, pessoa.nome]))
+  const [copiado, setCopiado] = useState(false)
+
+  async function copiarResumo() {
+    await copiarTexto(gerarResumo(racha, transferencias))
+    setCopiado(true)
+  }
 
   return (
     <section className="cartao" aria-labelledby="titulo-resultado">
@@ -50,6 +60,11 @@ export function ResultadoSecao({ pessoas, saldos, transferencias }: Props) {
               ))}
             </ul>
           )}
+
+          <button type="button" onClick={copiarResumo}>
+            Copiar resumo
+          </button>
+          {copiado && <p role="status">Resumo copiado!</p>}
         </>
       )}
     </section>
