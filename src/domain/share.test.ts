@@ -17,6 +17,11 @@ const rachaComSimbolosNoBase64: Racha = {
   despesas: [],
 }
 
+// codifica qualquer JSON à mão, sem passar pelo codificarRacha, para forjar links
+function codificarJson(valor: unknown): string {
+  return btoa(JSON.stringify(valor))
+}
+
 describe('codificarRacha', () => {
   it('deve devolver o mesmo racha quando é codificado e decodificado', () => {
     const texto = codificarRacha(jantarDeSexta)
@@ -63,6 +68,14 @@ describe('decodificarRacha', () => {
 
   it('deve devolver null quando o JSON não é um objeto', () => {
     const texto = codificarRacha(null as unknown as Racha)
+
+    const racha = decodificarRacha(texto)
+
+    expect(racha).toBeNull()
+  })
+
+  it('deve devolver null quando a versão do racha não é 1', () => {
+    const texto = codificarJson({ ...jantarDeSexta, versao: 2 })
 
     const racha = decodificarRacha(texto)
 

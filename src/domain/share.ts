@@ -15,7 +15,10 @@ function pareceRacha(valor: unknown): valor is Racha {
   const racha = valor as Record<string, unknown>
 
   return (
-    typeof racha.nome === 'string' && Array.isArray(racha.pessoas) && Array.isArray(racha.despesas)
+    racha.versao === 1 &&
+    typeof racha.nome === 'string' &&
+    Array.isArray(racha.pessoas) &&
+    Array.isArray(racha.despesas)
   )
 }
 
