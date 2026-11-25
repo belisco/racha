@@ -32,3 +32,40 @@ describe('codificarRacha', () => {
     expect(texto).toMatch(/^[A-Za-z0-9_-]+$/)
   })
 })
+
+describe('decodificarRacha', () => {
+  it('deve devolver null quando o texto tem caracteres que não são base64', () => {
+    const racha = decodificarRacha('%%%')
+
+    expect(racha).toBeNull()
+  })
+
+  it('deve devolver null quando o texto é curto demais para ser um racha', () => {
+    const racha = decodificarRacha('abc')
+
+    expect(racha).toBeNull()
+  })
+
+  it('deve devolver null quando o base64 é válido mas o conteúdo não é JSON', () => {
+    // base64 de "isto nao e json"
+    const racha = decodificarRacha('aXN0byBuYW8gZSBqc29u')
+
+    expect(racha).toBeNull()
+  })
+
+  it('deve devolver null quando o JSON não tem a forma de um racha', () => {
+    const texto = codificarRacha({} as Racha)
+
+    const racha = decodificarRacha(texto)
+
+    expect(racha).toBeNull()
+  })
+
+  it('deve devolver null quando o JSON não é um objeto', () => {
+    const texto = codificarRacha(null as unknown as Racha)
+
+    const racha = decodificarRacha(texto)
+
+    expect(racha).toBeNull()
+  })
+})

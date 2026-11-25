@@ -7,10 +7,27 @@ export function codificarRacha(racha: Racha): string {
   return btoa(binario).replaceAll('+', '-').replaceAll('/', '_').replaceAll('=', '')
 }
 
-export function decodificarRacha(texto: string): Racha {
-  const base64 = texto.replaceAll('-', '+').replaceAll('_', '/')
-  const completo = base64.padEnd(Math.ceil(base64.length / 4) * 4, '=')
-  const bytes = Uint8Array.from(atob(completo), (caractere) => caractere.charCodeAt(0))
+function pareceRacha(valor: unknown): valor is Racha {
+  if (typeof valor !== 'object' || valor === null) {
+    return false
+  }
 
-  return JSON.parse(new TextDecoder().decode(bytes)) as Racha
+  const racha = valor as Record<string, unknown>
+
+  return (
+    typeof racha.nome === 'string' && Array.isArray(racha.pessoas) && Array.isArray(racha.despesas)
+  )
+}
+
+export function decodificarRacha(texto: string): Racha | null {
+  try {
+    const base64 = texto.replaceAll('-', '+').replaceAll('_', '/')
+    const completo = base64.padEnd(Math.ceil(base64.length / 4) * 4, '=')
+    const bytes = Uint8Array.from(atob(completo), (caractere) => caractere.charCodeAt(0))
+    const valor: unknown = JSON.parse(new TextDecoder().decode(bytes))
+
+    return pareceRacha(valor) ? valor : null
+  } catch {
+    return null
+  }
 }
