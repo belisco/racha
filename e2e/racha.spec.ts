@@ -85,3 +85,29 @@ test('deve manter o racha quando a página é recarregada', async ({ page }) => 
     'Dani paga R$ 11,66 para Ana',
   ])
 })
+
+test('deve abrir o mesmo racha quando o link compartilhado é aberto em outro navegador', async ({
+  page,
+  browser,
+}) => {
+  await capturarAreaDeTransferencia(page)
+  await page.goto('/')
+  await montarJantarDeSexta(page)
+  await page.getByRole('button', { name: 'Compartilhar link' }).click()
+  const link = await lerAreaDeTransferencia(page)
+
+  // contexto novo: sem nada salvo no localStorage, só o link
+  const outroNavegador = await browser.newContext()
+  const outraPagina = await outroNavegador.newPage()
+  await outraPagina.goto(link)
+
+  await expect(outraPagina.getByLabel('Nome do racha')).toHaveValue('Jantar de sexta')
+  await expect(
+    outraPagina.getByRole('list', { name: 'Quem paga quem' }).getByRole('listitem'),
+  ).toHaveText([
+    'Caio paga R$ 88,33 para Bruno',
+    'Dani paga R$ 76,67 para Bruno',
+    'Dani paga R$ 11,66 para Ana',
+  ])
+  await outroNavegador.close()
+})
