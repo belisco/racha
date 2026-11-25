@@ -71,4 +71,18 @@ describe('App', () => {
     expect(screen.getByRole('alert')).toHaveTextContent('Ana está em alguma despesa e não pode ser removida.')
     expect(within(screen.getByRole('list', { name: 'Pessoas do racha' })).getByText('Ana')).toBeInTheDocument()
   })
+
+  it('deve copiar o resumo e avisar quando o botão copiar resumo é clicado', async () => {
+    const usuario = userEvent.setup()
+    render(<App />)
+    await cadastrarPessoa(usuario, 'Ana')
+    await cadastrarPessoa(usuario, 'Bruno')
+    await usuario.type(screen.getByLabelText('Valor (R$)'), '60,00')
+    await usuario.click(screen.getByRole('button', { name: 'Lançar despesa' }))
+
+    await usuario.click(screen.getByRole('button', { name: 'Copiar resumo' }))
+
+    expect(await navigator.clipboard.readText()).toMatch(/^\*Racha:/)
+    expect(screen.getByRole('status')).toHaveTextContent('Resumo copiado!')
+  })
 })
