@@ -70,3 +70,18 @@ test('deve recalcular saldos e transferências quando uma despesa é removida', 
     'Dani paga R$ 55,00 para Bruno',
   ])
 })
+
+test('deve manter o racha quando a página é recarregada', async ({ page }) => {
+  await page.goto('/')
+  await montarJantarDeSexta(page)
+
+  await page.reload()
+
+  await expect(page.getByLabel('Nome do racha')).toHaveValue('Jantar de sexta')
+  await expect(page.getByRole('list', { name: 'Pessoas do racha' }).getByRole('listitem')).toHaveCount(4)
+  await expect(page.getByRole('list', { name: 'Quem paga quem' }).getByRole('listitem')).toHaveText([
+    'Caio paga R$ 88,33 para Bruno',
+    'Dani paga R$ 76,67 para Bruno',
+    'Dani paga R$ 11,66 para Ana',
+  ])
+})
