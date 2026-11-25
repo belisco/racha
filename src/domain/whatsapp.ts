@@ -19,7 +19,7 @@ export function gerarResumo(racha: Racha, transferencias: Transferencia[]): stri
   )
 
   return [
-    `*Racha: ${racha.nome}*`,
+    racha.nome.trim() === '' ? '*Racha*' : `*Racha: ${racha.nome.trim()}*`,
     `Total: ${formatarCentavos(total)} · ${contarPessoas(racha.pessoas.length)}`,
     '',
     ...(linhas.length === 0 ? ['Ninguém deve nada.'] : linhas),

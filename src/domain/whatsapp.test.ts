@@ -96,4 +96,12 @@ describe('gerarResumo', () => {
 
     expect(resumo.split('\n')[1]).toBe('Total: R$ 0,00 · 1 pessoa')
   })
+
+  it('deve usar só a palavra Racha no título quando o racha não tem nome', () => {
+    const racha: Racha = { versao: 1, nome: '  ', pessoas: [], despesas: [] }
+
+    const resumo = gerarResumo(racha, [])
+
+    expect(resumo.split('\n')[0]).toBe('*Racha*')
+  })
 })
