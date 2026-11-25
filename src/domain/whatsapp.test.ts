@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import type { Racha } from './types'
+import { calcularSaldos } from './balances'
+import { calcularTransferencias } from './settlements'
+import type { Racha, Transferencia } from './types'
 import { gerarResumo } from './whatsapp'
 
 const jantarDeSexta: Racha = {
@@ -40,10 +42,29 @@ const jantarDeSexta: Racha = {
   ],
 }
 
+function transferenciasDo(racha: Racha): Transferencia[] {
+  return calcularTransferencias(calcularSaldos(racha.pessoas, racha.despesas))
+}
+
 describe('gerarResumo', () => {
   it('deve começar com o nome, o total com gorjeta e o número de pessoas quando o racha tem despesas', () => {
     const resumo = gerarResumo(jantarDeSexta, [])
 
     expect(resumo.startsWith('*Racha: Jantar de sexta*\nTotal: R$ 320,00 · 4 pessoas')).toBe(true)
+  })
+
+  it('deve listar uma linha por transferência depois do cabeçalho quando há quem pagar', () => {
+    const resumo = gerarResumo(jantarDeSexta, transferenciasDo(jantarDeSexta))
+
+    expect(resumo).toBe(
+      [
+        '*Racha: Jantar de sexta*',
+        'Total: R$ 320,00 · 4 pessoas',
+        '',
+        'Caio paga R$ 88,33 para Bruno',
+        'Dani paga R$ 76,67 para Bruno',
+        'Dani paga R$ 11,66 para Ana',
+      ].join('\n'),
+    )
   })
 })
