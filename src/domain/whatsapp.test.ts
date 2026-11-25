@@ -83,4 +83,17 @@ describe('gerarResumo', () => {
 
     expect(resumo.endsWith('\n\nNinguém deve nada.')).toBe(true)
   })
+
+  it('deve usar o singular quando o racha tem uma pessoa só', () => {
+    const racha: Racha = {
+      versao: 1,
+      nome: 'Café',
+      pessoas: [{ id: 'ana', nome: 'Ana' }],
+      despesas: [],
+    }
+
+    const resumo = gerarResumo(racha, [])
+
+    expect(resumo.split('\n')[1]).toBe('Total: R$ 0,00 · 1 pessoa')
+  })
 })

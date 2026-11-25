@@ -2,6 +2,10 @@ import { formatarCentavos } from './money'
 import { calcularGorjeta } from './split'
 import type { Racha, Transferencia } from './types'
 
+function contarPessoas(quantidade: number): string {
+  return quantidade === 1 ? '1 pessoa' : `${quantidade} pessoas`
+}
+
 export function gerarResumo(racha: Racha, transferencias: Transferencia[]): string {
   const total = racha.despesas.reduce(
     (soma, despesa) => soma + despesa.valor + calcularGorjeta(despesa.valor, despesa.gorjetaPercentual),
@@ -16,7 +20,7 @@ export function gerarResumo(racha: Racha, transferencias: Transferencia[]): stri
 
   return [
     `*Racha: ${racha.nome}*`,
-    `Total: ${formatarCentavos(total)} · ${racha.pessoas.length} pessoas`,
+    `Total: ${formatarCentavos(total)} · ${contarPessoas(racha.pessoas.length)}`,
     '',
     ...(linhas.length === 0 ? ['Ninguém deve nada.'] : linhas),
   ].join('\n')
