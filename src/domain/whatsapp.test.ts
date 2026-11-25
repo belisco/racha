@@ -67,4 +67,20 @@ describe('gerarResumo', () => {
       ].join('\n'),
     )
   })
+
+  it('deve avisar que ninguém deve nada quando não há transferências', () => {
+    const semDespesas: Racha = {
+      versao: 1,
+      nome: 'Almoço',
+      pessoas: [
+        { id: 'ana', nome: 'Ana' },
+        { id: 'bruno', nome: 'Bruno' },
+      ],
+      despesas: [],
+    }
+
+    const resumo = gerarResumo(semDespesas, [])
+
+    expect(resumo.endsWith('\n\nNinguém deve nada.')).toBe(true)
+  })
 })
