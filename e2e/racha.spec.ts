@@ -50,3 +50,23 @@ test('deve cobrar R$ 66,00 de Bruno quando R$ 90,00 com 10% é dividido com peso
     'Bruno paga R$ 66,00 para Ana',
   ])
 })
+
+test('deve recalcular saldos e transferências quando uma despesa é removida', async ({ page }) => {
+  await page.goto('/')
+  await montarJantarDeSexta(page)
+
+  await page.getByRole('button', { name: 'Remover Bebidas' }).click()
+
+  await expect(page.getByRole('list', { name: 'Despesas lançadas' }).getByRole('listitem')).toHaveCount(1)
+  await expect(page.getByRole('list', { name: 'Saldos' }).getByRole('listitem')).toHaveText([
+    'Ana deve R$ 55,00',
+    'Bruno recebe R$ 165,00',
+    'Caio deve R$ 55,00',
+    'Dani deve R$ 55,00',
+  ])
+  await expect(page.getByRole('list', { name: 'Quem paga quem' }).getByRole('listitem')).toHaveText([
+    'Ana paga R$ 55,00 para Bruno',
+    'Caio paga R$ 55,00 para Bruno',
+    'Dani paga R$ 55,00 para Bruno',
+  ])
+})
