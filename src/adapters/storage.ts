@@ -1,4 +1,5 @@
 import type { Racha } from '../domain/types'
+import { ehRachaValido } from '../domain/validacao'
 
 // só o pedaço do localStorage que o adaptador usa, para os testes injetarem um falso
 export type Armazenamento = Pick<Storage, 'getItem' | 'setItem'>
@@ -7,21 +8,6 @@ export const CHAVE_DO_RACHA = 'racha'
 
 export function criarRachaVazio(): Racha {
   return { versao: 1, nome: '', pessoas: [], despesas: [] }
-}
-
-function pareceRacha(valor: unknown): valor is Racha {
-  if (typeof valor !== 'object' || valor === null) {
-    return false
-  }
-
-  const racha = valor as Record<string, unknown>
-
-  return (
-    racha.versao === 1 &&
-    typeof racha.nome === 'string' &&
-    Array.isArray(racha.pessoas) &&
-    Array.isArray(racha.despesas)
-  )
 }
 
 export function salvarRacha(armazenamento: Armazenamento, racha: Racha): void {
@@ -37,7 +23,7 @@ export function carregarRacha(armazenamento: Armazenamento): Racha {
 
   try {
     const valor: unknown = JSON.parse(texto)
-    return pareceRacha(valor) ? valor : criarRachaVazio()
+    return ehRachaValido(valor) ? valor : criarRachaVazio()
   } catch {
     return criarRachaVazio()
   }

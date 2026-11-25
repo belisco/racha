@@ -78,4 +78,30 @@ describe('storage', () => {
 
     expect(resultado).toEqual({ versao: 1, nome: '', pessoas: [], despesas: [] })
   })
+
+  it('deve devolver o racha vazio quando uma despesa salva tem um pagador que não existe', () => {
+    const armazenamento = criarArmazenamentoFalso()
+    armazenamento.setItem(
+      CHAVE_DO_RACHA,
+      JSON.stringify({
+        versao: 1,
+        nome: 'Editado à mão',
+        pessoas: [{ id: 'ana', nome: 'Ana' }],
+        despesas: [
+          {
+            id: 'd1',
+            descricao: 'Pizza',
+            valor: 1000,
+            gorjetaPercentual: 0,
+            pagoPor: 'zeca',
+            partes: [{ pessoaId: 'ana', peso: 1 }],
+          },
+        ],
+      }),
+    )
+
+    const resultado = carregarRacha(armazenamento)
+
+    expect(resultado).toEqual({ versao: 1, nome: '', pessoas: [], despesas: [] })
+  })
 })
