@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { copiarTexto } from '../adapters/clipboard'
+import { linkEhLongo, montarLink } from '../adapters/link'
 import { formatarCentavos } from '../domain/money'
+import { codificarRacha } from '../domain/share'
 import type { Centavos, Racha, Transferencia } from '../domain/types'
 import { gerarResumo } from '../domain/whatsapp'
 
@@ -23,11 +25,21 @@ function descreverSaldo(saldo: Centavos): string {
 export function ResultadoSecao({ racha, saldos, transferencias }: Props) {
   const { pessoas } = racha
   const nomes = new Map(pessoas.map((pessoa) => [pessoa.id, pessoa.nome]))
-  const [copiado, setCopiado] = useState(false)
+  const [avisos, setAvisos] = useState<string[]>([])
 
   async function copiarResumo() {
     await copiarTexto(gerarResumo(racha, transferencias))
-    setCopiado(true)
+    setAvisos(['Resumo copiado!'])
+  }
+
+  async function compartilharLink() {
+    const link = montarLink(codificarRacha(racha))
+    await copiarTexto(link)
+    setAvisos(
+      linkEhLongo(link)
+        ? ['Link copiado!', 'O link ficou longo e pode não abrir em alguns aplicativos.']
+        : ['Link copiado!'],
+    )
   }
 
   return (
@@ -64,7 +76,14 @@ export function ResultadoSecao({ racha, saldos, transferencias }: Props) {
           <button type="button" onClick={copiarResumo}>
             Copiar resumo
           </button>
-          {copiado && <p role="status">Resumo copiado!</p>}
+          <button type="button" onClick={compartilharLink}>
+            Compartilhar link
+          </button>
+          <div role="status">
+            {avisos.map((aviso) => (
+              <p key={aviso}>{aviso}</p>
+            ))}
+          </div>
         </>
       )}
     </section>

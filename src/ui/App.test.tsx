@@ -1,6 +1,7 @@
 import { render, screen, within } from '@testing-library/react'
 import userEvent, { type UserEvent } from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
+import { codificarRacha } from '../domain/share'
 import { App } from './App'
 
 async function cadastrarPessoa(usuario: UserEvent, nome: string) {
@@ -84,5 +85,40 @@ describe('App', () => {
 
     expect(await navigator.clipboard.readText()).toMatch(/^\*Racha:/)
     expect(screen.getByRole('status')).toHaveTextContent('Resumo copiado!')
+  })
+
+  it('deve copiar um link com o racha e avisar quando o botão compartilhar link é clicado', async () => {
+    const usuario = userEvent.setup()
+    render(<App />)
+    await cadastrarPessoa(usuario, 'Ana')
+
+    await usuario.click(screen.getByRole('button', { name: 'Compartilhar link' }))
+
+    expect(await navigator.clipboard.readText()).toContain('#r=')
+    expect(screen.getByRole('status')).toHaveTextContent('Link copiado!')
+  })
+
+  it('deve avisar que o link ficou longo quando ele passa de 2000 caracteres', async () => {
+    const usuario = userEvent.setup()
+    const rachaGrande = {
+      versao: 1 as const,
+      nome: 'a'.repeat(2000),
+      pessoas: [{ id: 'ana', nome: 'Ana' }],
+      despesas: [],
+    }
+    window.history.replaceState(null, '', `#r=${codificarRacha(rachaGrande)}`)
+    render(<App />)
+
+    await usuario.click(screen.getByRole('button', { name: 'Compartilhar link' }))
+
+    expect(screen.getByRole('status')).toHaveTextContent('O link ficou longo')
+  })
+
+  it('deve mostrar o aviso quando o link da URL é inválido', () => {
+    window.history.replaceState(null, '', '#r=%%%')
+
+    render(<App />)
+
+    expect(screen.getByRole('alert')).toHaveTextContent('O link do racha está corrompido')
   })
 })

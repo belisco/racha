@@ -7,6 +7,7 @@ import { ResultadoSecao } from './ResultadoSecao'
 export function App() {
   const {
     racha,
+    avisoDoLink,
     saldos,
     transferencias,
     renomearRacha,
@@ -24,6 +25,12 @@ export function App() {
       </header>
 
       <main className="conteudo">
+        {avisoDoLink && (
+          <p className="erro" role="alert">
+            {avisoDoLink}
+          </p>
+        )}
+
         <section className="cartao" aria-labelledby="titulo-racha">
           <h2 id="titulo-racha">Racha</h2>
           <label className="campo">
