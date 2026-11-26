@@ -86,3 +86,7 @@ O primeiro comando baixa o Chromium do Playwright (só precisa uma vez). O segun
 ### Na CI
 
 A cada push e pull request, o GitHub Actions roda `typecheck`, `coverage` e `e2e` em Ubuntu, macOS e Windows. Os relatórios de cobertura e do Playwright ficam como artefatos da execução por 7 dias.
+
+## Vídeo
+
+(link a inserir)
