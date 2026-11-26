@@ -44,6 +44,11 @@ A regra de negócio fica toda em `src/domain`, em funções puras que não conhe
 
 | Ferramenta | Onde foi usada | O que gerou | O que o grupo revisou ou mudou |
 |---|---|---|---|
+| Claude (chat) | Ajuda na definição de escopo | Gerou opções de caminho a seguir, sem fugir da ideia, mas também sem deixar simples demais | O grupo revisou o planejamento |
+| Claude (code) | Revisão de código localmente | Qualidade de código e criação de guardrails e testes melhores na aplicação | Revisão de código |
+| Claude (code) | Formatação de mensagens | Reescrita de mensagens de commit, PR, review para favorecer padronização e facilitar o entendimento | Muitas vezes o grupo criou mensagens grandes e complicadas, principalmente em peer review (fizemos em call). A IA ajudou a organizar e resumir sem perder informação
+| Claude (chat) | Revisão do roteiro do vídeo | Ajuda na elaboração do roteiro para não passarmos do tempo mas também não deixar de apresentar toda a aplicação | Revisamos o tempo de fala e a navegação |
+| Claude (code) | Revisão dos Actions e de deploy | Verificação dos workflows e da arquitetura planejada | Melhorias na CI e algumas configurações do CloudFlare que passaram despercebidas |
 
 ## Execução dos testes
 
