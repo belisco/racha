@@ -130,6 +130,21 @@ describe('App', () => {
     expect(screen.getByRole('status')).toHaveTextContent('Pix copiado!')
   })
 
+  it('deve mostrar o QR code do Pix quando o recebedor tem chave Pix', async () => {
+    const usuario = userEvent.setup()
+    render(<App />)
+    await cadastrarPessoa(usuario, 'Ana')
+    await cadastrarPessoa(usuario, 'Bruno')
+    await usuario.type(screen.getByLabelText('Chave Pix de Bruno'), 'bruno@email.com')
+    await usuario.type(screen.getByLabelText('Valor (R$)'), '60,00')
+    await usuario.selectOptions(screen.getByLabelText('Quem pagou'), 'Bruno')
+
+    await usuario.click(screen.getByRole('button', { name: 'Lançar despesa' }))
+
+    const qrcode = await screen.findByRole('img', { name: 'QR code do Pix para Bruno' })
+    expect(qrcode).toHaveAttribute('src', expect.stringContaining('data:image/svg+xml'))
+  })
+
   it('deve mostrar o aviso quando o link da URL é inválido', () => {
     window.history.replaceState(null, '', '#r=%%%')
 
