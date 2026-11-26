@@ -203,6 +203,13 @@ button {
   font-size: 0.875rem;
 }
 
+.qrcode {
+  display: block;
+  margin: 8px 0 4px;
+  background: #fff;
+  border-radius: 4px;
+}
+
 button.secundario {
   background: transparent;
   color: var(--texto);
