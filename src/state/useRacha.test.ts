@@ -1,6 +1,7 @@
 import { act, renderHook } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { carregarRacha, salvarRacha } from '../adapters/storage'
+import { codificarRacha } from '../domain/share'
 import type { Racha } from '../domain/types'
 import { useRacha } from './useRacha'
 
@@ -13,6 +14,8 @@ const rachaComDuasPessoas: Racha = {
   ],
   despesas: [],
 }
+
+const rachaDoNavegador: Racha = { ...rachaComDuasPessoas, nome: 'Salvo no navegador' }
 
 const despesaDoBrunoDividida = {
   descricao: 'Pizza',
@@ -101,5 +104,33 @@ describe('useRacha', () => {
 
     expect(mensagem).toBe('Ana está em alguma despesa e não pode ser removida.')
     expect(result.current.racha.pessoas).toHaveLength(2)
+  })
+
+  it('deve começar com o racha do link quando a URL tem um racha válido', () => {
+    salvarRacha(localStorage, rachaDoNavegador)
+    window.history.replaceState(null, '', `#r=${codificarRacha(rachaComDuasPessoas)}`)
+
+    const { result } = renderHook(() => useRacha())
+
+    expect(result.current.racha).toEqual(rachaComDuasPessoas)
+    expect(result.current.avisoDoLink).toBeNull()
+  })
+
+  it('deve limpar o hash da URL quando o racha é carregado do link', () => {
+    window.history.replaceState(null, '', `#r=${codificarRacha(rachaComDuasPessoas)}`)
+
+    renderHook(() => useRacha())
+
+    expect(window.location.hash).toBe('')
+  })
+
+  it('deve usar o racha salvo e avisar quando o link é inválido', () => {
+    salvarRacha(localStorage, rachaDoNavegador)
+    window.history.replaceState(null, '', '#r=%%%')
+
+    const { result } = renderHook(() => useRacha())
+
+    expect(result.current.racha).toEqual(rachaDoNavegador)
+    expect(result.current.avisoDoLink).toContain('corrompido')
   })
 })

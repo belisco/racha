@@ -1,17 +1,45 @@
 import { useEffect, useMemo, useState } from 'react'
+import { lerCodigoDoLink, limparLink } from '../adapters/link'
 import { type Armazenamento, carregarRacha, salvarRacha } from '../adapters/storage'
 import { calcularSaldos } from '../domain/balances'
 import { calcularTransferencias } from '../domain/settlements'
+import { decodificarRacha } from '../domain/share'
 import type { Despesa, Racha } from '../domain/types'
 
 export type NovaDespesa = Omit<Despesa, 'id'>
+
+const AVISO_DO_LINK_INVALIDO =
+  'O link do racha está corrompido ou é de outra versão. Mostrando o racha salvo neste navegador.'
 
 function criarId(): string {
   return crypto.randomUUID()
 }
 
+// o racha do link tem prioridade sobre o salvo no navegador
+function carregarInicial(armazenamento: Armazenamento): { racha: Racha; aviso: string | null } {
+  const codigo = lerCodigoDoLink()
+
+  if (codigo === null) {
+    return { racha: carregarRacha(armazenamento), aviso: null }
+  }
+
+  const doLink = decodificarRacha(codigo)
+
+  if (doLink === null) {
+    return { racha: carregarRacha(armazenamento), aviso: AVISO_DO_LINK_INVALIDO }
+  }
+
+  return { racha: doLink, aviso: null }
+}
+
 export function useRacha(armazenamento: Armazenamento = localStorage) {
-  const [racha, setRacha] = useState<Racha>(() => carregarRacha(armazenamento))
+  const [inicial] = useState(() => carregarInicial(armazenamento))
+  const [racha, setRacha] = useState<Racha>(inicial.racha)
+
+  // o hash só sai depois do primeiro render, para o carregamento inicial poder ler de novo
+  useEffect(() => {
+    limparLink()
+  }, [])
 
   useEffect(() => {
     salvarRacha(armazenamento, racha)
@@ -79,6 +107,7 @@ export function useRacha(armazenamento: Armazenamento = localStorage) {
 
   return {
     racha,
+    avisoDoLink: inicial.aviso,
     saldos,
     transferencias,
     renomearRacha,
