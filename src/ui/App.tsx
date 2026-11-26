@@ -13,6 +13,7 @@ export function App() {
     renomearRacha,
     adicionarPessoa,
     removerPessoa,
+    definirChavePix,
     adicionarDespesa,
     removerDespesa,
   } = useRacha()
@@ -48,6 +49,7 @@ export function App() {
           pessoas={racha.pessoas}
           onAdicionar={adicionarPessoa}
           onRemover={removerPessoa}
+          onDefinirChavePix={definirChavePix}
         />
 
         <DespesaForm pessoas={racha.pessoas} onAdicionar={adicionarDespesa} />

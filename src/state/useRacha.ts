@@ -91,6 +91,15 @@ export function useRacha(armazenamento: Armazenamento = localStorage) {
     return null
   }
 
+  function definirChavePix(pessoaId: string, chave: string): void {
+    setRacha((atual) => ({
+      ...atual,
+      pessoas: atual.pessoas.map((pessoa) =>
+        pessoa.id === pessoaId ? { ...pessoa, chavePix: chave.trim() === '' ? undefined : chave } : pessoa,
+      ),
+    }))
+  }
+
   function adicionarDespesa(despesa: NovaDespesa): void {
     setRacha((atual) => ({
       ...atual,
@@ -113,6 +122,7 @@ export function useRacha(armazenamento: Armazenamento = localStorage) {
     renomearRacha,
     adicionarPessoa,
     removerPessoa,
+    definirChavePix,
     adicionarDespesa,
     removerDespesa,
   }
