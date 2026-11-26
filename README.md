@@ -47,4 +47,37 @@ A regra de negócio fica toda em `src/domain`, em funções puras que não conhe
 
 ## Execução dos testes
 
-(a preencher)
+Precisa do Node 22 ou mais novo. Na primeira vez, instale as dependências:
+
+```bash
+npm ci
+```
+
+### Testes de unidade
+
+```bash
+npm test
+```
+
+Roda com o Vitest os testes de `src/domain` (dinheiro, rateio, saldos, transferências, link, resumo do WhatsApp, validação e Pix), de `src/adapters`, do hook `useRacha` e dos componentes da interface (com Testing Library e jsdom).
+
+### Cobertura
+
+```bash
+npm run coverage
+```
+
+Mostra a tabela de cobertura no terminal e gera o relatório em `coverage/lcov-report/index.html`. O comando falha se linhas, funções, branches ou statements ficarem abaixo de 80%.
+
+### Testes de ponta a ponta
+
+```bash
+npm run e2e:install
+npm run e2e
+```
+
+O primeiro comando baixa o Chromium do Playwright (só precisa uma vez). O segundo gera o build de produção, sobe o `vite preview` na porta 4173 e roda os testes de `e2e/`: o Jantar de sexta com as três transferências e o resumo, a divisão com pesos e gorjeta, a remoção de uma despesa, o racha mantido depois de recarregar a página e o link compartilhado aberto em outro navegador. Para ver o navegador abrindo, use `npx playwright test --headed`.
+
+### Na CI
+
+A cada push e pull request, o GitHub Actions roda `typecheck`, `coverage` e `e2e` em Ubuntu, macOS e Windows. Os relatórios de cobertura e do Playwright ficam como artefatos da execução por 7 dias.
