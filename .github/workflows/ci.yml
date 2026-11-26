@@ -24,8 +24,17 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm run coverage
+      # baixar o Chromium leva uns 3 minutos no Windows; com cache, só na primeira vez
+      - uses: actions/cache@v6
+        with:
+          path: ${{ runner.temp }}/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
       - run: npm run e2e:install
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: ${{ runner.temp }}/ms-playwright
       - run: npm run e2e
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: ${{ runner.temp }}/ms-playwright
       - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
