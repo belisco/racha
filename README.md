@@ -89,4 +89,4 @@ A cada push e pull request, o GitHub Actions roda `typecheck`, `coverage` e `e2e
 
 ## Vídeo
 
-(link a inserir)
+https://youtu.be/raTmUtxxK4g
