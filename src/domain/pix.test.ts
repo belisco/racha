@@ -22,3 +22,16 @@ describe('gerarCodigoPix', () => {
     expect(codigo).toContain('5802BR')
   })
 })
+
+describe('gerarCodigoPix e o CRC', () => {
+  it('deve terminar com o campo 6304 e o CRC16 de todo o resto do código', () => {
+    const dados = { chave: 'ana@email.com', nome: 'Ana Conceição', valor: 1166 }
+
+    const codigo = gerarCodigoPix(dados)
+    const semCrc = codigo.slice(0, -4)
+    const crc = codigo.slice(-4)
+
+    expect(semCrc.endsWith('6304')).toBe(true)
+    expect(crc).toBe(calcularCrc16(semCrc))
+  })
+})
