@@ -83,7 +83,7 @@ describe('App', () => {
 
     await usuario.click(screen.getByRole('button', { name: 'Copiar resumo' }))
 
-    expect(await navigator.clipboard.readText()).toMatch(/^\*Racha:/)
+    expect(await navigator.clipboard.readText()).toContain('Bruno paga R$ 30,00 para Ana')
     expect(screen.getByRole('status')).toHaveTextContent('Resumo copiado!')
   })
 

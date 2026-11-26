@@ -1,25 +1,11 @@
 import type { Racha } from './types'
+import { ehRachaValido } from './validacao'
 
 export function codificarRacha(racha: Racha): string {
   const bytes = new TextEncoder().encode(JSON.stringify(racha))
   const binario = Array.from(bytes, (byte) => String.fromCharCode(byte)).join('')
 
   return btoa(binario).replaceAll('+', '-').replaceAll('/', '_').replaceAll('=', '')
-}
-
-function pareceRacha(valor: unknown): valor is Racha {
-  if (typeof valor !== 'object' || valor === null) {
-    return false
-  }
-
-  const racha = valor as Record<string, unknown>
-
-  return (
-    racha.versao === 1 &&
-    typeof racha.nome === 'string' &&
-    Array.isArray(racha.pessoas) &&
-    Array.isArray(racha.despesas)
-  )
 }
 
 export function decodificarRacha(texto: string): Racha | null {
@@ -29,7 +15,7 @@ export function decodificarRacha(texto: string): Racha | null {
     const bytes = Uint8Array.from(atob(completo), (caractere) => caractere.charCodeAt(0))
     const valor: unknown = JSON.parse(new TextDecoder().decode(bytes))
 
-    return pareceRacha(valor) ? valor : null
+    return ehRachaValido(valor) ? valor : null
   } catch {
     return null
   }

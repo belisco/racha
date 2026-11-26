@@ -81,4 +81,26 @@ describe('decodificarRacha', () => {
 
     expect(racha).toBeNull()
   })
+
+  it('deve devolver null quando uma despesa do link tem peso zero', () => {
+    const texto = codificarJson({
+      versao: 1,
+      nome: 'Forjado',
+      pessoas: [{ id: 'ana', nome: 'Ana' }],
+      despesas: [
+        {
+          id: 'd1',
+          descricao: 'Pizza',
+          valor: 1000,
+          gorjetaPercentual: 0,
+          pagoPor: 'ana',
+          partes: [{ pessoaId: 'ana', peso: 0 }],
+        },
+      ],
+    })
+
+    const racha = decodificarRacha(texto)
+
+    expect(racha).toBeNull()
+  })
 })
