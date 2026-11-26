@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { copiarTexto } from '../adapters/clipboard'
 import { linkEhLongo, montarLink } from '../adapters/link'
 import { formatarCentavos } from '../domain/money'
+import { gerarCodigoPix } from '../domain/pix'
 import { codificarRacha } from '../domain/share'
 import type { Centavos, Racha, Transferencia } from '../domain/types'
 import { gerarResumo } from '../domain/whatsapp'
@@ -25,7 +26,18 @@ function descreverSaldo(saldo: Centavos): string {
 export function ResultadoSecao({ racha, saldos, transferencias }: Props) {
   const { pessoas } = racha
   const nomes = new Map(pessoas.map((pessoa) => [pessoa.id, pessoa.nome]))
+  const chaves = new Map(pessoas.map((pessoa) => [pessoa.id, pessoa.chavePix?.trim() ?? '']))
   const [avisos, setAvisos] = useState<string[]>([])
+
+  async function copiarPix(transferencia: Transferencia) {
+    const codigo = gerarCodigoPix({
+      chave: chaves.get(transferencia.para) ?? '',
+      nome: nomes.get(transferencia.para) ?? '',
+      valor: transferencia.valor,
+    })
+    await copiarTexto(codigo)
+    setAvisos(['Pix copiado!'])
+  }
 
   async function copiarResumo() {
     await copiarTexto(gerarResumo(racha, transferencias))
@@ -68,6 +80,16 @@ export function ResultadoSecao({ racha, saldos, transferencias }: Props) {
                 <li key={`${transferencia.de}-${transferencia.para}`}>
                   {nomes.get(transferencia.de)} paga {formatarCentavos(transferencia.valor)} para{' '}
                   {nomes.get(transferencia.para)}
+                  {chaves.get(transferencia.para) && (
+                    <button
+                      type="button"
+                      className="secundario"
+                      aria-label={`Copiar Pix para ${nomes.get(transferencia.para)}`}
+                      onClick={() => copiarPix(transferencia)}
+                    >
+                      Copiar Pix
+                    </button>
+                  )}
                 </li>
               ))}
             </ul>

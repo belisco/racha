@@ -5,9 +5,10 @@ interface Props {
   pessoas: Pessoa[]
   onAdicionar: (nome: string) => string | null
   onRemover: (pessoaId: string) => string | null
+  onDefinirChavePix: (pessoaId: string, chave: string) => void
 }
 
-export function PessoasSecao({ pessoas, onAdicionar, onRemover }: Props) {
+export function PessoasSecao({ pessoas, onAdicionar, onRemover, onDefinirChavePix }: Props) {
   const [nome, setNome] = useState('')
   const [erro, setErro] = useState<string | null>(null)
 
@@ -45,6 +46,13 @@ export function PessoasSecao({ pessoas, onAdicionar, onRemover }: Props) {
         {pessoas.map((pessoa) => (
           <li key={pessoa.id} className="item">
             {pessoa.nome}
+            <input
+              type="text"
+              aria-label={`Chave Pix de ${pessoa.nome}`}
+              placeholder="Chave Pix (opcional)"
+              value={pessoa.chavePix ?? ''}
+              onChange={(evento) => onDefinirChavePix(pessoa.id, evento.target.value)}
+            />
             <button
               type="button"
               className="secundario"
